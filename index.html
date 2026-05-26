@@ -562,15 +562,15 @@
 
     <section class="screen" data-screen="code">
       <div class="top"><span class="pill">secret phrase</span><span>screen 02</span></div>
-      <h2>电影开场前，<br>要先说一句暗号</h2>
-      <p class="lead">演示版暗号：生日快乐。正式版可以换成你们的纪念日、第一次见面地点、昵称或者一句梗。</p>
+      <h2>放映前，<br>先问狗贝一个问题</h2>
+      <p class="lead">第一次见面的时候，我手里提着什么？提示：很轻，很不占地方，但我记到现在。</p>
       <div class="input-row">
         <input id="secret" placeholder="输入暗号">
         <button id="unlock">解锁</button>
       </div>
-      <div class="hint" id="hint">答错会给提示，不会卡住她。</div>
-      <div class="caption-card" id="caption">字幕等待入场。</div>
-      <button class="next ghost" data-next="scenes"><span>跳过演示</span><span>→</span></button>
+      <div class="hint" id="hint">答错也没关系，放映员会偷偷给提示。</div>
+      <div class="caption-card" id="caption">灯还没有暗下来，第一句字幕正在等狗贝解锁。</div>
+      <button class="next ghost" id="skipSecret" data-next="scenes"><span>算啦，放映员偷偷帮你开门</span><span>→</span></button>
       <div class="progress" style="--w:18%"><span></span></div>
     </section>
 
@@ -668,16 +668,27 @@
     const unlock = document.querySelector('#unlock');
     const hint = document.querySelector('#hint');
     const caption = document.querySelector('#caption');
+    let secretAttempts = 0;
     unlock.addEventListener('click', () => {
-      if (secret.value.trim() === '生日快乐') {
+      if (secret.value.trim() === '空气') {
         hint.textContent = '暗号正确。灯暗了，电影开始。';
-        caption.textContent = '第一句字幕：今晚只邀请你一个人，因为主角就是你。';
+        caption.textContent = '对，是空气。但那天我其实提着一点紧张、一点期待，还有后来越来越多的喜欢。';
         setTimeout(() => show('scenes'), 850);
       } else {
-        hint.textContent = '差一点。演示版暗号是“生日快乐”。';
+        secretAttempts += 1;
+        const hints = [
+          '好像不是这个。再想想，那天我手里其实“什么都没有”。',
+          '真的很轻。轻到你看不见，但我那天好像提着一整袋紧张。',
+          '最后一个提示：是两个字，第一个字是“空”。'
+        ];
+        hint.textContent = hints[Math.min(secretAttempts - 1, hints.length - 1)];
       }
     });
     secret.addEventListener('keydown', e => { if (e.key === 'Enter') unlock.click(); });
+
+    document.querySelector('#skipSecret').addEventListener('click', () => {
+      caption.textContent = '答案是“空气”。但那天我提着的，其实是第一次见你的期待。';
+    });
 
     const selectLimited = (selector, limit, hintEl, prefix) => {
       const items = [...document.querySelectorAll(selector)];
