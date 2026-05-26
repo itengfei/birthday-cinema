@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Private Cinema</title>
+  <style>
+    :root {
+      --ink: #fff8f4;
+      --muted: rgba(255,248,244,.72);
+      --soft: rgba(255,248,244,.48);
+      --pink: #ff9fba;
+      --blush: #ffd3df;
+      --gold: #ffd37a;
+      --mint: #9bd7ca;
+      --line: rgba(255,255,255,.18);
+      --glass: rgba(255,255,255,.10);
+      --dark: #07050b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 16% 12%, rgba(255,159,186,.24), transparent 28%),
+        radial-gradient(circle at 86% 18%, rgba(255,211,122,.18), transparent 26%),
+        radial-gradient(circle at 50% 92%, rgba(155,215,202,.12), transparent 30%),
+        linear-gradient(145deg, #050308, #15101e 48%, #321826);
+    }
+
+    .phone {
+      width: min(430px, 100%);
+      min-height: min(790px, calc(100vh - 44px));
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      border: 1px solid rgba(255,255,255,.16);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), transparent 18%),
+        radial-gradient(circle at 50% 18%, rgba(255,159,186,.18), transparent 24%),
+        linear-gradient(160deg, #08060d, #1a1122 52%, #51263a);
+      box-shadow: 0 30px 90px rgba(0,0,0,.48);
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .12;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.55) 1px, transparent 1.5px),
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 28px 28px, 100% 9px;
+      mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 90%);
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      padding: 28px 24px 26px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(16px) scale(.99);
+      pointer-events: none;
+      transition: opacity .42s ease, transform .42s ease;
+    }
+
+    .screen.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--soft);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .pill {
+      padding: 7px 10px;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 999px;
+      background: rgba(255,255,255,.07);
+      color: rgba(255,255,255,.7);
+    }
+
+    h1, h2, p { margin: 0; }
+
+    h1 {
+      margin-top: 78px;
+      font-size: 44px;
+      line-height: 1.02;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin-top: 52px;
+      font-size: 31px;
+      line-height: 1.1;
+      font-weight: 740;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.72;
+    }
+
+    .progress {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 18px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      width: var(--w);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--pink), var(--gold), var(--mint));
+      transition: width .35s ease;
+    }
+
+    button {
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+      color: #2a1420;
+      background: var(--blush);
+      min-height: 50px;
+      border-radius: 999px;
+      padding: 13px 18px;
+      transition: transform .16s ease, filter .16s ease, background .16s ease;
+    }
+
+    button:active { transform: scale(.985); }
+
+    .ghost {
+      color: var(--ink);
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.16);
+    }
+
+    .next {
+      margin-top: auto;
+      margin-bottom: 34px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 16px 40px rgba(255,159,186,.18);
+    }
+
+    .ticket {
+      margin-top: 32px;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,221,229,.88)),
+        linear-gradient(145deg, #fff, #ffd3df);
+      color: #2a1420;
+      box-shadow: 0 26px 68px rgba(0,0,0,.34);
+      transform: rotate(-2deg);
+    }
+
+    .ticket-inner {
+      padding: 20px;
+      border: 1px solid rgba(42,20,32,.12);
+      margin: 10px;
+      border-radius: 18px;
+    }
+
+    .ticket-meta {
+      display: flex;
+      justify-content: space-between;
+      color: rgba(42,20,32,.55);
+      font-size: 11px;
+    }
+
+    .ticket-title {
+      margin-top: 44px;
+      font-size: 36px;
+      line-height: 1.05;
+      font-weight: 780;
+    }
+
+    .tear {
+      margin: 18px 0;
+      border-top: 1px dashed rgba(42,20,32,.28);
+    }
+
+    .marquee {
+      margin-top: 20px;
+      padding: 10px 0;
+      overflow: hidden;
+      border-top: 1px solid rgba(255,255,255,.12);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.72);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .marquee span {
+      display: inline-block;
+      animation: slide 12s linear infinite;
+    }
+
+    @keyframes slide {
+      from { transform: translateX(12%); }
+      to { transform: translateX(-72%); }
+    }
+
+    .input-row {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 50px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 18px;
+      background: rgba(255,255,255,.10);
+      outline: none;
+      color: var(--ink);
+      padding: 0 15px;
+      font: inherit;
+    }
+
+    input::placeholder { color: rgba(255,255,255,.42); }
+
+    .hint {
+      min-height: 22px;
+      margin-top: 12px;
+      color: var(--blush);
+      font-size: 13px;
+    }
+
+    .caption-card {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(0,0,0,.24);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.84);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .scene-grid {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .scene {
+      min-height: 132px;
+      padding: 14px;
+      border-radius: 22px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.15), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.13);
+      color: var(--ink);
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: auto 12px 12px auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,211,122,.16);
+      filter: blur(2px);
+    }
+
+    .scene strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .scene small {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .scene.selected {
+      background: linear-gradient(145deg, rgba(255,211,122,.32), rgba(255,159,186,.18));
+      border-color: rgba(255,211,122,.48);
+      box-shadow: 0 18px 44px rgba(255,159,186,.12);
+    }
+
+    .stars {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .star {
+      min-height: 60px;
+      padding: 0;
+      border-radius: 20px;
+      color: rgba(255,255,255,.34);
+      font-size: 28px;
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.13);
+    }
+
+    .star.lit {
+      color: var(--gold);
+      background: rgba(255,211,122,.18);
+      box-shadow: 0 0 28px rgba(255,211,122,.18);
+    }
+
+    .reason-list {
+      margin-top: 16px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .reason {
+      padding: 11px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.84);
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .24s ease, transform .24s ease;
+    }
+
+    .reason.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .film {
+      display: flex;
+      gap: 14px;
+      margin: 28px -24px 0 0;
+      padding-right: 24px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+
+    .frame {
+      flex: 0 0 80%;
+      min-height: 360px;
+      scroll-snap-align: start;
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,.14);
+      overflow: hidden;
+      background: rgba(255,255,255,.08);
+      box-shadow: 0 20px 54px rgba(0,0,0,.22);
+    }
+
+    .photo {
+      height: 230px;
+      background:
+        radial-gradient(circle at 24% 18%, rgba(255,255,255,.38), transparent 18%),
+        linear-gradient(145deg, rgba(255,159,186,.38), rgba(255,211,122,.22), rgba(155,215,202,.18)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.12) 0 10px, transparent 10px 20px);
+    }
+
+    .frame-body {
+      padding: 16px;
+    }
+
+    .frame-body strong {
+      font-size: 18px;
+    }
+
+    .frame-body p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .letter {
+      margin-top: 34px;
+      padding: 24px 22px;
+      border-radius: 26px;
+      background: linear-gradient(145deg, rgba(255,248,244,.96), rgba(255,225,232,.92));
+      color: #2a1420;
+      box-shadow: 0 28px 72px rgba(0,0,0,.32);
+    }
+
+    .letter .to {
+      color: rgba(42,20,32,.56);
+      font-size: 13px;
+    }
+
+    .letter h2 {
+      color: #2a1420;
+      margin-top: 16px;
+      font-size: 38px;
+    }
+
+    .letter p {
+      margin-top: 16px;
+      color: rgba(42,20,32,.72);
+      font-size: 15px;
+      line-height: 1.85;
+    }
+
+    .sparkles {
+      margin-top: 26px;
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      color: var(--gold);
+      font-size: 24px;
+      animation: float 1.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0); opacity: .72; }
+      to { transform: translateY(-8px); opacity: 1; }
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 0; }
+      .phone {
+        width: 100%;
+        min-height: 100vh;
+        border: 0;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <section class="screen active" data-screen="intro">
+      <div class="top"><span class="pill">private cinema</span><span>no. 0524</span></div>
+      <h1>今晚，<br>只放映<br>关于你的电影</h1>
+      <p class="lead">不是正式版文案，只是把气质拉回来：亮一点、甜一点、漂亮一点，但别像廉价贺卡。</p>
+      <div class="ticket">
+        <div class="ticket-inner">
+          <div class="ticket-meta"><span>ADMIT ONE</span><span>NOW SHOWING</span></div>
+          <div class="ticket-title">Birthday<br>Premiere</div>
+          <div class="tear"></div>
+          <div class="ticket-meta"><span>Audience: Her</span><span>Seat: Beside Me</span></div>
+        </div>
+      </div>
+      <div class="marquee"><span>✦ 生日快乐 ✦ 这是一次只发给你的私人放映 ✦ 每一幕都藏了一点喜欢你 ✦</span></div>
+      <button class="next" data-next="code"><span>点击入场</span><span>→</span></button>
+      <div class="progress" style="--w:0%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="code">
+      <div class="top"><span class="pill">secret phrase</span><span>screen 02</span></div>
+      <h2>电影开场前，<br>要先说一句暗号</h2>
+      <p class="lead">演示版暗号：生日快乐。正式版可以换成你们的纪念日、第一次见面地点、昵称或者一句梗。</p>
+      <div class="input-row">
+        <input id="secret" placeholder="输入暗号">
+        <button id="unlock">解锁</button>
+      </div>
+      <div class="hint" id="hint">答错会给提示，不会卡住她。</div>
+      <div class="caption-card" id="caption">字幕等待入场。</div>
+      <button class="next ghost" data-next="scenes"><span>跳过演示</span><span>→</span></button>
+      <div class="progress" style="--w:18%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="scenes">
+      <div class="top"><span class="pill">choose scenes</span><span>screen 03</span></div>
+      <h2>选三幕，<br>装进今晚的片单</h2>
+      <p class="lead">这一段保留刚才长版的互动感，但视觉更像“选电影片段”，不是答题闯关。</p>
+      <div class="scene-grid">
+        <button class="scene"><strong>第一次心动</strong><small>把最开始的那一点喜欢放进片头</small></button>
+        <button class="scene"><strong>一起大笑</strong><small>她笑起来的样子，值得单独成片</small></button>
+        <button class="scene"><strong>普通晚饭</strong><small>不是大事，但后来一直记得</small></button>
+        <button class="scene"><strong>未来旅行</strong><small>还没发生，也已经很期待</small></button>
+      </div>
+      <div class="hint" id="sceneHint">已选择 0 / 3</div>
+      <button class="next" data-next="stars"><span>继续放映</span><span>→</span></button>
+      <div class="progress" style="--w:34%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="stars">
+      <div class="top"><span class="pill">five stars</span><span>screen 04</span></div>
+      <h2>点亮五颗星，<br>解锁五句喜欢</h2>
+      <p class="lead">正式版这里会换成你的真实表达。不要太模板，要像你平时会说、但这次说认真一点。</p>
+      <div class="stars">
+        <button class="star" data-reason="你认真生活的样子，总是让我觉得世界会变好一点。">★</button>
+        <button class="star" data-reason="你笑起来的时候，我会很确定：今天值得被记住。">★</button>
+        <button class="star" data-reason="和你在一起，普通日子也会有一点电影感。">★</button>
+        <button class="star" data-reason="你偶尔的小脾气，也被我偷偷放进了喜欢里。">★</button>
+        <button class="star" data-reason="我想陪你过很多很多个生日，不止今年。">★</button>
+      </div>
+      <div class="reason-list" id="reasons"></div>
+      <button class="next" data-next="film"><span>打开胶片</span><span>→</span></button>
+      <div class="progress" style="--w:52%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="film">
+      <div class="top"><span class="pill">memory reel</span><span>screen 05</span></div>
+      <h2>几帧回忆，<br>先用占位替你等照片</h2>
+      <p class="lead">左右滑动。正式版放 3-8 张照片，照片会让高级感直接上一个台阶。</p>
+      <div class="film">
+        <article class="frame">
+          <div class="photo"></div>
+          <div class="frame-body"><strong>第一帧</strong><p>放第一次见面、第一次旅行，或者你最想让她看到的一张照片。</p></div>
+        </article>
+        <article class="frame">
+          <div class="photo"></div>
+          <div class="frame-body"><strong>第二帧</strong><p>一句当时没说出口的话，可以放在照片下面。</p></div>
+        </article>
+        <article class="frame">
+          <div class="photo"></div>
+          <div class="frame-body"><strong>第三帧</strong><p>把未来也做成一帧：下一顿饭、下一座城市、下一次生日。</p></div>
+        </article>
+      </div>
+      <button class="next" data-next="future"><span>下一幕</span><span>→</span></button>
+      <div class="progress" style="--w:70%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="future">
+      <div class="top"><span class="pill">future tickets</span><span>screen 06</span></div>
+      <h2>给未来，<br>留三张票</h2>
+      <p class="lead">这段比“约会券”更漂亮一点，但保留可玩性。她选完后，你可以真的兑现。</p>
+      <div class="scene-grid">
+        <button class="scene future"><strong>夜场电影</strong><small>你买票，她选片</small></button>
+        <button class="scene future"><strong>散步到很晚</strong><small>不赶时间，只牵手</small></button>
+        <button class="scene future"><strong>她决定的一天</strong><small>餐厅、路线、节奏都听她的</small></button>
+        <button class="scene future"><strong>下一座城市</strong><small>把旅行从愿望变成计划</small></button>
+      </div>
+      <div class="hint" id="futureHint">已保留 0 / 3</div>
+      <button class="next" data-next="final"><span>打开最后一封信</span><span>→</span></button>
+      <div class="progress" style="--w:86%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="final">
+      <div class="top"><span class="pill">final letter</span><span>screen 07</span></div>
+      <div class="letter">
+        <div class="to">To: 我的女主角</div>
+        <h2>生日快乐</h2>
+        <p>正式版这里会换成你真正想对她说的话。现在这段只是占位：谢谢你来到我的生活里，让一些普通日子也变得很值得期待。</p>
+        <p>新的一岁，愿你被很多温柔包围；也愿我能在你身边，陪你把接下来的日子，慢慢过成值得回看的电影。</p>
+      </div>
+      <div class="sparkles"><span>✦</span><span>✦</span><span>✦</span></div>
+      <button class="next ghost" data-next="intro"><span>重新放映</span><span>↺</span></button>
+      <div class="progress" style="--w:100%"><span></span></div>
+    </section>
+  </main>
+
+  <script>
+    const screens = [...document.querySelectorAll('.screen')];
+    const show = (name) => {
+      screens.forEach(screen => screen.classList.toggle('active', screen.dataset.screen === name));
+    };
+    document.querySelectorAll('[data-next]').forEach(btn => btn.addEventListener('click', () => show(btn.dataset.next)));
+
+    const secret = document.querySelector('#secret');
+    const unlock = document.querySelector('#unlock');
+    const hint = document.querySelector('#hint');
+    const caption = document.querySelector('#caption');
+    unlock.addEventListener('click', () => {
+      if (secret.value.trim() === '生日快乐') {
+        hint.textContent = '暗号正确。灯暗了，电影开始。';
+        caption.textContent = '第一句字幕：今晚只邀请你一个人，因为主角就是你。';
+        setTimeout(() => show('scenes'), 850);
+      } else {
+        hint.textContent = '差一点。演示版暗号是“生日快乐”。';
+      }
+    });
+    secret.addEventListener('keydown', e => { if (e.key === 'Enter') unlock.click(); });
+
+    const selectLimited = (selector, limit, hintEl, prefix) => {
+      const items = [...document.querySelectorAll(selector)];
+      items.forEach(item => item.addEventListener('click', () => {
+        const count = items.filter(node => node.classList.contains('selected')).length;
+        if (!item.classList.contains('selected') && count >= limit) {
+          hintEl.textContent = `先选 ${limit} 个就好，剩下的留给以后。`;
+          return;
+        }
+        item.classList.toggle('selected');
+        const next = items.filter(node => node.classList.contains('selected')).length;
+        hintEl.textContent = next === limit ? `${prefix}完成。` : `已选择 ${next} / ${limit}`;
+      }));
+    };
+    selectLimited('.scene:not(.future)', 3, document.querySelector('#sceneHint'), '今晚片单');
+    selectLimited('.future', 3, document.querySelector('#futureHint'), '未来票根');
+
+    const reasonList = document.querySelector('#reasons');
+    document.querySelectorAll('.star').forEach(star => star.addEventListener('click', () => {
+      if (star.classList.contains('lit')) return;
+      star.classList.add('lit');
+      const item = document.createElement('div');
+      item.className = 'reason';
+      item.textContent = star.dataset.reason;
+      reasonList.appendChild(item);
+      requestAnimationFrame(() => item.classList.add('show'));
+    }));
+  </script>
+</body>
+</html>
