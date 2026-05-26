@@ -44,7 +44,8 @@
       width: min(430px, 100%);
       min-height: min(790px, calc(100vh - 44px));
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       border-radius: 34px;
       border: 1px solid rgba(255,255,255,.16);
       background:
@@ -158,6 +159,13 @@
     }
 
     button:active { transform: scale(.985); }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .48;
+      filter: saturate(.45);
+      box-shadow: none;
+    }
 
     .ghost {
       color: var(--ink);
@@ -273,6 +281,70 @@
       line-height: 1.75;
     }
 
+    .story-card {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 24px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.13);
+      box-shadow: 0 20px 54px rgba(0,0,0,.20);
+    }
+
+    .story-kicker {
+      color: var(--gold);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .story-card p {
+      margin-top: 12px;
+      color: rgba(255,255,255,.84);
+      font-size: 15px;
+      line-height: 1.78;
+    }
+
+    .story-line {
+      margin-top: 18px;
+      padding: 13px 14px;
+      border-left: 3px solid rgba(255,211,122,.72);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.78);
+      font-size: 14px;
+      line-height: 1.62;
+    }
+
+    .stamp-row {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stamp {
+      min-height: 76px;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px dashed rgba(255,255,255,.24);
+      background: rgba(0,0,0,.16);
+      color: rgba(255,255,255,.82);
+    }
+
+    .stamp b {
+      display: block;
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .stamp span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
     .scene-grid {
       margin-top: 26px;
       display: grid;
@@ -368,74 +440,88 @@
       transform: translateY(0);
     }
 
-    .film {
-      display: flex;
-      gap: 14px;
-      margin: 28px -24px 0 0;
-      padding-right: 24px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-    }
-
-    .frame {
-      flex: 0 0 80%;
-      min-height: 360px;
-      scroll-snap-align: start;
-      border-radius: 26px;
-      border: 1px solid rgba(255,255,255,.14);
-      overflow: hidden;
-      background: rgba(255,255,255,.08);
-      box-shadow: 0 20px 54px rgba(0,0,0,.22);
-    }
-
-    .photo {
-      height: 230px;
-      background:
-        radial-gradient(circle at 24% 18%, rgba(255,255,255,.38), transparent 18%),
-        linear-gradient(145deg, rgba(255,159,186,.38), rgba(255,211,122,.22), rgba(155,215,202,.18)),
-        repeating-linear-gradient(90deg, rgba(255,255,255,.12) 0 10px, transparent 10px 20px);
-    }
-
-    .frame-body {
-      padding: 16px;
-    }
-
-    .frame-body strong {
-      font-size: 18px;
-    }
-
-    .frame-body p {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
     .letter {
-      margin-top: 34px;
-      padding: 24px 22px;
-      border-radius: 26px;
-      background: linear-gradient(145deg, rgba(255,248,244,.96), rgba(255,225,232,.92));
+      position: relative;
+      margin-top: 24px;
+      padding: 28px 22px 24px;
+      border-radius: 28px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.55), transparent 32%),
+        linear-gradient(145deg, rgba(255,248,244,.98), rgba(255,228,235,.94));
       color: #2a1420;
       box-shadow: 0 28px 72px rgba(0,0,0,.32);
     }
 
+    .letter::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(42,20,32,.10);
+      border-radius: 22px;
+      pointer-events: none;
+    }
+
+    .letter::after {
+      content: "DAY 1588";
+      position: absolute;
+      top: 18px;
+      right: -28px;
+      width: 116px;
+      padding: 7px 0;
+      transform: rotate(26deg);
+      background: rgba(255,211,122,.70);
+      color: rgba(42,20,32,.72);
+      font-size: 10px;
+      text-align: center;
+      letter-spacing: .08em;
+    }
+
     .letter .to {
+      position: relative;
       color: rgba(42,20,32,.56);
       font-size: 13px;
     }
 
     .letter h2 {
+      position: relative;
       color: #2a1420;
       margin-top: 16px;
       font-size: 38px;
     }
 
     .letter p {
+      position: relative;
       margin-top: 16px;
       color: rgba(42,20,32,.72);
       font-size: 15px;
       line-height: 1.85;
+    }
+
+    .letter-meta {
+      position: relative;
+      margin-top: 18px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .letter-meta span {
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: rgba(42,20,32,.07);
+      color: rgba(42,20,32,.62);
+      font-size: 12px;
+    }
+
+    .letter-sign {
+      position: relative;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(42,20,32,.10);
+      color: rgba(42,20,32,.68);
+      font-size: 14px;
+      text-align: right;
     }
 
     .sparkles {
@@ -515,18 +601,9 @@
         border-radius: 16px;
       }
 
-      .film {
-        margin-right: -18px;
-        padding-right: 18px;
-      }
-
-      .frame {
-        flex-basis: 86%;
-        min-height: 330px;
-      }
-
-      .photo {
-        height: 205px;
+      .letter {
+        margin-top: 22px;
+        padding: 26px 19px 22px;
       }
 
       .next {
@@ -544,18 +621,18 @@
 <body>
   <main class="phone">
     <section class="screen active" data-screen="intro">
-      <div class="top"><span class="pill">private cinema</span><span>no. 0524</span></div>
-      <h1>今晚，<br>只放映<br>关于你的电影</h1>
-      <p class="lead">不是正式版文案，只是把气质拉回来：亮一点、甜一点、漂亮一点，但别像廉价贺卡。</p>
+      <div class="top"><span class="pill">private cinema</span><span>day 1588</span></div>
+      <h1>狗贝，<br>今晚只放映<br>关于你的电影</h1>
+      <p class="lead">这不是一张普通的生日贺卡。是我们相恋第 1588 天的一场特别放映，是我把想你、喜欢你、和想见你的瞬间，认真剪成的一部小电影。</p>
       <div class="ticket">
         <div class="ticket-inner">
-          <div class="ticket-meta"><span>ADMIT ONE</span><span>NOW SHOWING</span></div>
-          <div class="ticket-title">Birthday<br>Premiere</div>
+          <div class="ticket-meta"><span>ADMIT ONE</span><span>DAY 1588</span></div>
+          <div class="ticket-title">Birthday<br>Double Feature</div>
           <div class="tear"></div>
-          <div class="ticket-meta"><span>Audience: Her</span><span>Seat: Beside Me</span></div>
+          <div class="ticket-meta"><span>Audience: 狗贝</span><span>Seat: 我旁边</span></div>
         </div>
       </div>
-      <div class="marquee"><span>✦ 生日快乐 ✦ 这是一次只发给你的私人放映 ✦ 每一幕都藏了一点喜欢你 ✦</span></div>
+      <div class="marquee"><span>✦ 狗贝生日快乐 ✦ 第 5 个生日，不对，是第 10 个 ✦ 深圳和西安都在片单里 ✦</span></div>
       <button class="next" data-next="code"><span>点击入场</span><span>→</span></button>
       <div class="progress" style="--w:0%"><span></span></div>
     </section>
@@ -568,87 +645,182 @@
         <input id="secret" placeholder="输入暗号">
         <button id="unlock">解锁</button>
       </div>
-      <div class="hint" id="hint">答错也没关系，放映员会偷偷给提示。</div>
+      <div class="hint" id="hint">答错也没关系，会有一点点提示。</div>
       <div class="caption-card" id="caption">灯还没有暗下来，第一句字幕正在等狗贝解锁。</div>
-      <button class="next ghost" id="skipSecret" data-next="scenes"><span>算啦，放映员偷偷帮你开门</span><span>→</span></button>
       <div class="progress" style="--w:18%"><span></span></div>
     </section>
 
+    <section class="screen" data-screen="first-meet">
+      <div class="top"><span class="pill">chapter 01</span><span>screen 03</span></div>
+      <h2>第一幕，<br>我空着手出现</h2>
+      <p class="lead">十月一放假，我从北京回来。你生病了，那也是我们第一次见面。</p>
+      <div class="story-card">
+        <div class="story-kicker">THE EMPTY HANDS INCIDENT</div>
+        <p>别人第一次见病人，多少会带点东西。我倒好，什么都没拿，直接把“空气”提到了你面前。</p>
+        <p>这件事后来成了梗，每次翻出来都要被你批判一遍。该批判，确实该批判。</p>
+        <div class="story-line">但我一直记得，那天我手里没有东西，心里却全是紧张。</div>
+      </div>
+      <button class="next" data-next="potato"><span>继续这一幕</span><span>→</span></button>
+      <div class="progress" style="--w:24%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="potato">
+      <div class="top"><span class="pill">chapter 02</span><span>screen 04</span></div>
+      <h2>医院旁边，<br>一盘土豆丝</h2>
+      <p class="lead">那天我们去医院旁边吃饭，很多细节都模糊了，但土豆丝我还记得。</p>
+      <div class="story-card">
+        <div class="story-kicker">A VERY SMALL DINNER</div>
+        <p>那不是多隆重的一顿饭，可它像电影里一个很轻的镜头：医院旁边、土豆丝、你坐在对面。</p>
+        <p>最离谱的是，最后还是你付的钱。第一次见病人空手去，第一顿饭还让病人付钱，我这个人当时确实很值得被写进反面教材。</p>
+        <div class="story-line">幸好你没有把我从片场赶出去，不然这部电影第一幕就杀青了。</div>
+      </div>
+      <button class="next" data-next="half-movie"><span>放下一段</span><span>→</span></button>
+      <div class="progress" style="--w:30%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="half-movie">
+      <div class="top"><span class="pill">chapter 03</span><span>screen 05</span></div>
+      <h2>那场电影，<br>没有看完</h2>
+      <p class="lead">后来我们去看电影。看到一半，你觉得时间太晚，要回去了。</p>
+      <div class="story-card">
+        <div class="story-kicker">UNFINISHED MOVIE</div>
+        <p>那场电影没有完整看完，但我现在想想，反而很像我们的开头：不完美，不按剧本，却有很多后来。</p>
+        <p>从那天开始，很多事情都慢慢有了续集。第一次见面、第一次被你批判、第一次觉得：这个人好像会在我生命里停很久。</p>
+      </div>
+      <button class="next" data-next="distance"><span>进入异地篇</span><span>→</span></button>
+      <div class="progress" style="--w:36%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="distance">
+      <div class="top"><span class="pill">chapter 04</span><span>screen 06</span></div>
+      <h2>深圳和西安，<br>中间隔着想念</h2>
+      <p class="lead">深圳是我工作的地方，西安是你工作的地方，也是我们共同的家乡。</p>
+      <div class="story-card">
+        <div class="story-kicker">LONG DISTANCE</div>
+        <p>异地这件事，很多原因都在我。因为我在深圳打工，让你承受了很多本来不该承受的委屈和辛苦。</p>
+        <p>所以这段我想认真说：谢谢你一直等我，也谢谢你在那么多不容易的日子里，还是把我放在心里。</p>
+        <div class="story-line">深圳和西安很远，但你一直离我很近。</div>
+      </div>
+      <button class="next" data-next="airport"><span>去机场</span><span>→</span></button>
+      <div class="progress" style="--w:42%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="airport">
+      <div class="top"><span class="pill">chapter 05</span><span>screen 07</span></div>
+      <h2>最难忘的，<br>总是你接我</h2>
+      <p class="lead">每次从机场出来，看见你在等我，那一刻异地才真的短暂结束。</p>
+      <div class="story-card">
+        <div class="story-kicker">ARRIVAL / DEPARTURE</div>
+        <p>最难忘的不是机场本身，是你来接我的那一刻。一路上的疲惫、等待和想念，好像都会在看到你的时候落下来。</p>
+        <p>所以我特别想快点结束异地。不是因为我不想坐飞机，而是因为我想把“让你等我”这件事，慢慢从我们的生活里删掉。</p>
+      </div>
+      <button class="next" data-next="xian"><span>回到西安</span><span>→</span></button>
+      <div class="progress" style="--w:48%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="xian">
+      <div class="top"><span class="pill">chapter 06</span><span>screen 08</span></div>
+      <h2>西安这座城，<br>装着太多我们</h2>
+      <p class="lead">你接我、吃饭、油泼面，还有很多很多普通但舍不得忘的瞬间。</p>
+      <div class="story-card">
+        <div class="story-kicker">HOME CITY</div>
+        <p>西安是家乡，也是我们把想念落地的地方。每次见面，好像都要吃点什么，走一段路，再把攒了很久的话慢慢讲完。</p>
+        <div class="stamp-row">
+          <div class="stamp"><b>油泼面</b><span>热气一上来，见面的真实感也跟着上来。</span></div>
+          <div class="stamp"><b>你接我</b><span>人群里看到你的那一秒，心会先跑过去。</span></div>
+        </div>
+      </div>
+      <button class="next" data-next="snow"><span>切到雪地</span><span>→</span></button>
+      <div class="progress" style="--w:54%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="snow">
+      <div class="top"><span class="pill">chapter 07</span><span>screen 09</span></div>
+      <h2>雪下得很大，<br>我们吵得也很大</h2>
+      <p class="lead">经典场景：天上飘着大雪，下面两个人因为鸡毛蒜皮的事吵架。</p>
+      <div class="story-card">
+        <div class="story-kicker">THE SNOW ARGUMENT</div>
+        <p>你吵架的时候老不说话，我就在旁边叭叭叭叭一直说。现在回头看，这场面又好笑又欠揍。</p>
+        <p>但我也想把它放进电影里。因为真正的我们，不只有甜甜的画面，也有吵完还舍不得松开的笨拙。</p>
+        <div class="story-line">以后我会少叭叭一点，多抱抱你一点。</div>
+      </div>
+      <button class="next" data-next="quirks"><span>放点日常梗</span><span>→</span></button>
+      <div class="progress" style="--w:60%"><span></span></div>
+    </section>
+
+    <section class="screen" data-screen="quirks">
+      <div class="top"><span class="pill">chapter 08</span><span>screen 10</span></div>
+      <h2>我们之间，<br>还有很多小破梗</h2>
+      <p class="lead">不一定高级，但很我们。别人看了可能不懂，你一看就知道。</p>
+      <div class="stamp-row">
+        <div class="stamp"><b>我天天减肥</b><span>但成果这件事，暂时还没有特别尊重我。</span></div>
+        <div class="stamp"><b>你天天找工作</b><span>我嘴上开玩笑，心里其实希望你快点轻松。</span></div>
+        <div class="stamp"><b>鸡毛蒜皮</b><span>吵的时候很认真，回头看又很像生活本身。</span></div>
+        <div class="stamp"><b>叭叭叭叭</b><span>这项技能我会控制，争取逐年减产。</span></div>
+      </div>
+      <button class="next" data-next="scenes"><span>让狗贝选片</span><span>→</span></button>
+      <div class="progress" style="--w:66%"><span></span></div>
+    </section>
+
     <section class="screen" data-screen="scenes">
-      <div class="top"><span class="pill">choose scenes</span><span>screen 03</span></div>
+      <div class="top"><span class="pill">choose scenes</span><span>screen 11</span></div>
       <h2>选三幕，<br>装进今晚的片单</h2>
-      <p class="lead">这一段保留刚才长版的互动感，但视觉更像“选电影片段”，不是答题闯关。</p>
+      <p class="lead">这几幕都是真的。你选哪三幕，我就把哪三幕当作今晚的特别加映。</p>
       <div class="scene-grid">
-        <button class="scene"><strong>第一次心动</strong><small>把最开始的那一点喜欢放进片头</small></button>
-        <button class="scene"><strong>一起大笑</strong><small>她笑起来的样子，值得单独成片</small></button>
-        <button class="scene"><strong>普通晚饭</strong><small>不是大事，但后来一直记得</small></button>
-        <button class="scene"><strong>未来旅行</strong><small>还没发生，也已经很期待</small></button>
+        <button class="scene"><strong>医院旁边的土豆丝</strong><small>第一次见面，病人还请我吃饭</small></button>
+        <button class="scene"><strong>没看完的电影</strong><small>半场退场，但故事还很长</small></button>
+        <button class="scene"><strong>机场接我</strong><small>每次你来等我，都很难忘</small></button>
+        <button class="scene"><strong>雪地吵架</strong><small>大雪纷飞，下面叭叭叭叭</small></button>
       </div>
       <div class="hint" id="sceneHint">已选择 0 / 3</div>
       <button class="next" data-next="stars"><span>继续放映</span><span>→</span></button>
-      <div class="progress" style="--w:34%"><span></span></div>
+      <div class="progress" style="--w:72%"><span></span></div>
     </section>
 
     <section class="screen" data-screen="stars">
-      <div class="top"><span class="pill">five stars</span><span>screen 04</span></div>
+      <div class="top"><span class="pill">five stars</span><span>screen 12</span></div>
       <h2>点亮五颗星，<br>解锁五句喜欢</h2>
-      <p class="lead">正式版这里会换成你的真实表达。不要太模板，要像你平时会说、但这次说认真一点。</p>
+      <p class="lead">有些话平时不一定说出口，今天就借着生日，认真放给你看。</p>
       <div class="stars">
-        <button class="star" data-reason="你认真生活的样子，总是让我觉得世界会变好一点。">★</button>
-        <button class="star" data-reason="你笑起来的时候，我会很确定：今天值得被记住。">★</button>
-        <button class="star" data-reason="和你在一起，普通日子也会有一点电影感。">★</button>
-        <button class="star" data-reason="你偶尔的小脾气，也被我偷偷放进了喜欢里。">★</button>
-        <button class="star" data-reason="我想陪你过很多很多个生日，不止今年。">★</button>
+        <button class="star" data-reason="你可爱、真诚，很多时候比我更会认真对待生活。">★</button>
+        <button class="star" data-reason="你不容易发脾气，总是把很多情绪先自己扛下来。">★</button>
+        <button class="star" data-reason="你对我太好了，好到我经常觉得自己要更努力才配得上。">★</button>
+        <button class="star" data-reason="你会做饭，而且做得很好吃，这一点必须隆重表扬。">★</button>
+        <button class="star" data-reason="异地这么久你一直等我，这份踏实和真诚，对我特别珍贵。">★</button>
       </div>
       <div class="reason-list" id="reasons"></div>
-      <button class="next" data-next="film"><span>打开胶片</span><span>→</span></button>
-      <div class="progress" style="--w:52%"><span></span></div>
-    </section>
-
-    <section class="screen" data-screen="film">
-      <div class="top"><span class="pill">memory reel</span><span>screen 05</span></div>
-      <h2>几帧回忆，<br>先用占位替你等照片</h2>
-      <p class="lead">左右滑动。正式版放 3-8 张照片，照片会让高级感直接上一个台阶。</p>
-      <div class="film">
-        <article class="frame">
-          <div class="photo"></div>
-          <div class="frame-body"><strong>第一帧</strong><p>放第一次见面、第一次旅行，或者你最想让她看到的一张照片。</p></div>
-        </article>
-        <article class="frame">
-          <div class="photo"></div>
-          <div class="frame-body"><strong>第二帧</strong><p>一句当时没说出口的话，可以放在照片下面。</p></div>
-        </article>
-        <article class="frame">
-          <div class="photo"></div>
-          <div class="frame-body"><strong>第三帧</strong><p>把未来也做成一帧：下一顿饭、下一座城市、下一次生日。</p></div>
-        </article>
-      </div>
-      <button class="next" data-next="future"><span>下一幕</span><span>→</span></button>
-      <div class="progress" style="--w:70%"><span></span></div>
+      <div class="hint" id="starHint">已点亮 0 / 5。全部点亮后继续。</div>
+      <button class="next" id="starsNext" data-next="future" disabled><span>点亮五颗星后继续</span><span>→</span></button>
+      <div class="progress" style="--w:78%"><span></span></div>
     </section>
 
     <section class="screen" data-screen="future">
-      <div class="top"><span class="pill">future tickets</span><span>screen 06</span></div>
-      <h2>给未来，<br>留三张票</h2>
-      <p class="lead">这段比“约会券”更漂亮一点，但保留可玩性。她选完后，你可以真的兑现。</p>
+      <div class="top"><span class="pill">future tickets</span><span>screen 13</span></div>
+      <h2>给未来，<br>留四张票</h2>
+      <p class="lead">未来马上结束异地。后面的路，我想认真和你一起走。</p>
       <div class="scene-grid">
-        <button class="scene future"><strong>夜场电影</strong><small>你买票，她选片</small></button>
-        <button class="scene future"><strong>散步到很晚</strong><small>不赶时间，只牵手</small></button>
-        <button class="scene future"><strong>她决定的一天</strong><small>餐厅、路线、节奏都听她的</small></button>
-        <button class="scene future"><strong>下一座城市</strong><small>把旅行从愿望变成计划</small></button>
+        <button class="scene future"><strong>结束异地</strong><small>把“下次见”换成“今晚见”</small></button>
+        <button class="scene future"><strong>订婚结婚</strong><small>走进婚姻的殿堂，也走进每天的日子</small></button>
+        <button class="scene future"><strong>一起过日子</strong><small>做饭、散步、吵小架，也好好和好</small></button>
+        <button class="scene future"><strong>环游世界</strong><small>走遍祖国，再一起出国看更大的世界</small></button>
       </div>
-      <div class="hint" id="futureHint">已保留 0 / 3</div>
+      <div class="hint" id="futureHint">已保留 0 / 4</div>
       <button class="next" data-next="final"><span>打开最后一封信</span><span>→</span></button>
-      <div class="progress" style="--w:86%"><span></span></div>
+      <div class="progress" style="--w:90%"><span></span></div>
     </section>
 
     <section class="screen" data-screen="final">
-      <div class="top"><span class="pill">final letter</span><span>screen 07</span></div>
+      <div class="top"><span class="pill">final letter</span><span>screen 14</span></div>
       <div class="letter">
-        <div class="to">To: 我的女主角</div>
+        <div class="to">To: 狗贝</div>
         <h2>生日快乐</h2>
-        <p>正式版这里会换成你真正想对她说的话。现在这段只是占位：谢谢你来到我的生活里，让一些普通日子也变得很值得期待。</p>
-        <p>新的一岁，愿你被很多温柔包围；也愿我能在你身边，陪你把接下来的日子，慢慢过成值得回看的电影。</p>
+        <div class="letter-meta"><span>第 1588 天</span><span>第 10 个生日</span><span>私人放映终章</span></div>
+        <p>今天是我们相恋的第 1588 天，也是我给你过的第 5 个生日。不对，应该是第 10 个，毕竟你一年要过两次生日，这一点我们必须严谨。</p>
+        <p>写到这里的时候，我突然觉得，这些日子里有很多好笑的、笨拙的、吵吵闹闹的瞬间，但它们合在一起，就是我最舍不得删掉的电影。</p>
+        <p>我知道异地让你受了很多委屈。因为我在深圳，因为很多现实的问题，让你等了太久，也让你承受了本不该承受的难过。谢谢你一直没有走远，谢谢你还愿意相信我，愿意和我继续往前。</p>
+        <p>以后我想快点结束异地，和你订婚、结婚，陪你一起过真正的日子。也想和你从广东、湖南、陕西、青海、山西继续出发，走遍祖国，去国外，去环游世界。</p>
+        <p>当然，我也会继续努力减肥，虽然这件事目前成绩不太稳定；也会少一点叭叭叭叭，多一点抱抱你。狗贝，生日快乐。新的一岁，换我更认真地爱你。</p>
+        <div class="letter-sign">From: 那个空手看病人、但很认真爱你的人</div>
       </div>
       <div class="sparkles"><span>✦</span><span>✦</span><span>✦</span></div>
       <button class="next ghost" data-next="intro"><span>重新放映</span><span>↺</span></button>
@@ -662,7 +834,10 @@
       screens.forEach(screen => screen.classList.toggle('active', screen.dataset.screen === name));
       window.scrollTo({ top: 0, behavior: 'instant' });
     };
-    document.querySelectorAll('[data-next]').forEach(btn => btn.addEventListener('click', () => show(btn.dataset.next)));
+    document.querySelectorAll('[data-next]').forEach(btn => btn.addEventListener('click', () => {
+      if (btn.disabled) return;
+      show(btn.dataset.next);
+    }));
 
     const secret = document.querySelector('#secret');
     const unlock = document.querySelector('#unlock');
@@ -673,7 +848,7 @@
       if (secret.value.trim() === '空气') {
         hint.textContent = '暗号正确。灯暗了，电影开始。';
         caption.textContent = '对，是空气。但那天我其实提着一点紧张、一点期待，还有后来越来越多的喜欢。';
-        setTimeout(() => show('scenes'), 850);
+        setTimeout(() => show('first-meet'), 850);
       } else {
         secretAttempts += 1;
         const hints = [
@@ -685,10 +860,6 @@
       }
     });
     secret.addEventListener('keydown', e => { if (e.key === 'Enter') unlock.click(); });
-
-    document.querySelector('#skipSecret').addEventListener('click', () => {
-      caption.textContent = '答案是“空气”。但那天我提着的，其实是第一次见你的期待。';
-    });
 
     const selectLimited = (selector, limit, hintEl, prefix) => {
       const items = [...document.querySelectorAll(selector)];
@@ -704,9 +875,11 @@
       }));
     };
     selectLimited('.scene:not(.future)', 3, document.querySelector('#sceneHint'), '今晚片单');
-    selectLimited('.future', 3, document.querySelector('#futureHint'), '未来票根');
+    selectLimited('.future', 4, document.querySelector('#futureHint'), '未来票根');
 
     const reasonList = document.querySelector('#reasons');
+    const starHint = document.querySelector('#starHint');
+    const starsNext = document.querySelector('#starsNext');
     document.querySelectorAll('.star').forEach(star => star.addEventListener('click', () => {
       if (star.classList.contains('lit')) return;
       star.classList.add('lit');
@@ -715,6 +888,14 @@
       item.textContent = star.dataset.reason;
       reasonList.appendChild(item);
       requestAnimationFrame(() => item.classList.add('show'));
+      const litCount = document.querySelectorAll('.star.lit').length;
+      if (litCount === 5) {
+        starHint.textContent = '五颗星都亮了。可以进入下一幕。';
+        starsNext.disabled = false;
+        starsNext.querySelector('span').textContent = '进入未来片单';
+      } else {
+        starHint.textContent = `已点亮 ${litCount} / 5。全部点亮后继续。`;
+      }
     }));
   </script>
 </body>
